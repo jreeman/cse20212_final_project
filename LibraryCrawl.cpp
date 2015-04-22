@@ -12,68 +12,71 @@ Jack Klamer
 #include<iostream>
 #include<string>
 #include<stdlib.h>
+#include<fstream>
+#include<stdio.h>
+#include<vector>
+#include<time.h>
+#include "Level.h"
+
 using namespace std;
 
-const int SCREEN_WIDTH = 1000;
-const int SCREEN_HEIGHT = 800;
+const int SCREEN_WIDTH = 1200;
+const int SCREEN_HEIGHT = 700;
+
+const string LEVEL1("./Levels/Level1.txt");
 
 int main( int argc, char* args[])
 {
-	//declare variables
-	SDL_Window * gameWindow=NULL;
-	SDL_Surface * screen=NULL;
-	SDL_Surface * bookshelf=NULL;
-	string bookshelf_image_path= "/afs/nd.edu/coursesp.15/cse/cse20212.01/dropbox/jklamer/finalproject/cse20212_final_project/Images/bookshelf.jpeg";
-	IMG_Init(IMG_INIT_JPG);
+	int state=1, level=0;
+	vector<string> levelSelect;
+	levelSelect.push_back(LEVEL1);
+	Level gameLevel(1,1,1,levelSelect[level]);
 	
-	//initialize everything
-	if(SDL_Init(SDL_INIT_VIDEO)<0)
+	
+	
+	while(state!=99)
 	{
-		cout<<"SDL failed to initialize";
-		return EXIT_FAILURE;
+		switch(state)
+		{
+			case 0:
+				//state=gameLevel.menu();
+				level=0;
+				state=1;
+				break;
+			case 1:
+				state=gameLevel.playLevel(levelSelect[level]);
+				if(state == 1)
+				{
+					//level++;
+				}
+				if(level == levelSelect.size())
+				{
+					state=3;
+				}
+				break;
+			case 2:
+				//state=gameLevel.charSelectScreen();
+				break;
+			case 3:
+				//state=gameLevel.endScreen();
+				break;
+			default:
+				//state=gameLevel.menu();
+				break;
+		}
 	}
 	
-	//create window
-	gameWindow= SDL_CreateWindow("Library Crawl", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,SCREEN_HEIGHT,SDL_WINDOW_SHOWN);
-	if(gameWindow == NULL)
-	{
-		cout<<"Window did not open for some reason";
-		return EXIT_FAILURE;
-	}
 	
-	//load and blit jpeg
-	screen=SDL_GetWindowSurface(gameWindow);
-	if(screen==NULL)
-	{
-		cout<<"Screen not found";
-		return EXIT_FAILURE;
-	}
-	SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0x00, 0x00, 0x00) );
-	bookshelf = IMG_Load(bookshelf_image_path.c_str());
-	if(bookshelf==NULL)
-	{
-		cout<<"Bookshelf failed to load";
-		return EXIT_FAILURE;
-	}
-	SDL_Rect squareSpecs;
-	squareSpecs.x=200;
-	squareSpecs.y=150;
-	squareSpecs.w= 30;
-	squareSpecs.h= 30;
 	
-	try
-	{
-		SDL_BlitScaled(bookshelf,NULL,screen, &squareSpecs);
-	} catch(exception &e)
-	{
-		cout<<e.what();
-	}
-	SDL_Delay(5000);
 	
-	SDL_FreeSurface(bookshelf);
 	
-	SDL_DestroyWindow(gameWindow);
-	SDL_Quit();
-	IMG_Quit();
+	//gameLevel.print();
+	
 	return EXIT_SUCCESS;
 }
+
+
+
+
+
+	
